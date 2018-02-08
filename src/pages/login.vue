@@ -26,11 +26,10 @@
             <h5>{{error}}</h5>
           </div>
           <p>
-            <label for="remember"><input name="remember" v-model="remember" type="checkbox" id="remember" > 记住我的登录信息
-            </label>
+            <label>登录失败要重新点击验证码哦!</label>
             <router-link to="/forgot" title=" Password Lost and Found" style="color: #3d4450;float:right;font-weight:bold;padding:2px;">忘记密码？</router-link>
           </p>
-          <button @click="login" value="登录" data-toggle="modal" data-target=".bs-example-modal-sm"  class="btn btn-inverse-primary pull-center">登录</button>
+          <button @click="login" value="登录" :disabled="isDisabled"  class="btn btn-inverse-primary pull-center">登录</button>
           <router-link to="/registered" class="btn btn-inverse-primary pull-right">注册</router-link>
           </div>
         </div>
@@ -51,18 +50,18 @@ export default {
     return {
       email: '',
       password: '',
-      remember: false,
       geetest_challenge: '',
       geetest_validate: '',
       geetest_seccode: '',
       userId: '',
       gt_server_status: '',
       error: '',
-      captchaObj: ''
+      captchaObj: '',
+      isDisabled: false
     }
   },
   created() {
-    if(localStorage.getItem("token") != null){
+    if (localStorage.getItem("token") != null){
       this.$router.push({ path: '/' })
     }
   },
@@ -73,9 +72,8 @@ export default {
         that.error = '请输入账号和密码'
         return
       }
-      
       that.isDisabled = true
-      axios.post('http://localhost:2001/api/token', qs.stringify({
+      axios.post('http://localhost:2001/api/tokens', qs.stringify({
         email: that.email,
         password: that.password,
         geetest_challenge: that.geetest_challenge,
@@ -87,32 +85,24 @@ export default {
         var result = response.data
         if(result.success){
           var user = result.obj.userInfo
-          if (that.remember){
-            localStorage.setItem("token",result.obj.token)
-            localStorage.setItem("userId",user.userId)
-            localStorage.setItem("userName",user.userName)
-            localStorage.setItem("userAvatar",user.userAvatar)
-          } else {
-            sessionStorage.setItem("token",result.obj.token)
-            sessionStorage.setItem("userId",user.userId)
-            sessionStorage.setItem("userName",user.userName)
-            sessionStorage.setItem("userAvatar",user.userAvatar)
+          localStorage.setItem("token",result.obj.token)
+          localStorage.setItem("userId",user.userId)
+          localStorage.setItem("userName",user.userName)
+          localStorage.setItem("userAvatar",user.userAvatar)
+          switch (user.sex) {
+            case 1:localStorage.setItem('sex','mars');break;
+            case 2:localStorage.setItem('sex','venus');break;
+            default:localStorage.setItem('sex','genderless');break;
           }
-          that.$router.push({ path: '/' })
+          that.$router.go(-1)
         }else{
-          // sessionStorage.setItem('email', that.email)
-          // sessionStorage.setItem('password', response.data.password)
           that.error = result.errorMsg
           that.captchaObj.reset()
         }
+        that.isDisabled=false
       }).catch(function (error) {
-        if (!that.email) {
-          that.error = '邮箱不能为空'
-        } else {
-          console.log(error)
-          that.$route.matched[0].meta = {
-            requiresAuth: true
-          }
+        that.$route.matched[0].meta = {
+          requiresAuth: true
         }
       })
     }

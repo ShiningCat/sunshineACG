@@ -116,7 +116,113 @@
 	list-style: none;
 	text-align: left;
 }
-/**
-*** by 版权所有
-*** copyright @忧郁的弟弟
-**/
+.cb-slideshow li:nth-child(1) span {
+	background-image: url(https://ws2.sinaimg.cn/large/005ODKsIgw1f61hdjph46j31hc0u079r.jpg);
+}
+.cb-slideshow li:nth-child(2) span {
+	background-image: url(https://ws2.sinaimg.cn/large/005ODKsIgw1faoiz4646ej31hc0u0wjj.jpg);
+}
+.cb-slideshow li:nth-child(3) span {
+	background-image: url(https://ws3.sinaimg.cn/large/005ODKsIgw1faojsd6geij31hc0u0dm4.jpg);
+}
+.cb-slideshow li:nth-child(4) span {
+	background-image: url(https://ws1.sinaimg.cn/large/005ODKsIgw1fatix6oykhj31hc10sn7t.jpg);
+}
+.cb-slideshow li:nth-child(5) span {
+	background-image: url(https://ws2.sinaimg.cn/large/005ODKsIgw1fakyjee8yhj31hc0zkk1i.jpg);
+}
+.cb-slideshow li:nth-child(6) span {
+	background-image: url(https://ws3.sinaimg.cn/large/005ODKsIgw1fatiuksm5sj31hc0u07b0.jpg);
+}
+
+object,embed{-webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;  -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}
+@-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}
+@-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}
+@-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}
+@keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}
+
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+.lh30{
+	line-height:30px;
+  }
+  .ml15{
+	margin-left: 15px;
+  }
+  .ml5{
+	margin-left: 5px;
+  }
+  .mt10{
+	margin-top: 10px;
+  }
+  .error{
+	margin-top: 5px;
+	margin-left: 5px;
+	color:red;
+  }
+  .introduce{
+	margin-left: 15px;
+  }
+  textarea{outline:none;resize:none;}
+  .RichText {
+	  word-break: break-word;
+	  white-space: pre-wrap;
+	  margin-bottom: 6px;
+	  margin-left: 25px;
+	  line-height: 25px;
+  }
+.ProfileHeader-content{
+	border-left: 164px solid transparent;
+	padding-left: 32px;
+}
+.name{
+	font-size: 26px;
+    font-weight: 600;
+    font-synthesis: style;
+    line-height: 30px;
+}
+.introduce-user{
+	margin-left: 13px;
+    font-size: 18px;
+    white-space: nowrap;
+}
+.sex{
+	font-size: 26px;
+    font-weight: 600;
+}
+.userActive{
+	color: #ffffff;
+	/* background-color: rgba(43, 144, 226, 0.7) !important; */
+}
+.navbar-nav > li > a{
+	color: #2b2323b9;
+	font-size: 16px;
+}
+.ContentItem-status{
+	margin-top: 5px;
+    color: #2b2323b9;
+    font-size: 14px;
+}
+.ContentItem-title{
+	font-size: 18px;
+    font-weight: 600;
+    font-synthesis: style;
+    line-height: 1.6;
+    color: #1a1a1a;
+    margin-top: -4px;
+    margin-bottom: -4px;
+}
+#avatar:hover{
+	cursor:pointer;
+}
+#img{
+	display:none;
+}
+.List-item{
+	position: relative;
+    padding: 16px 20px;
+}

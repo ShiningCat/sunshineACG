@@ -59,7 +59,7 @@ export default {
     },
     logout () {
       let that = this
-      axios.delete('http://localhost:2001/api/token', {params: {token: that.token}})
+      axios.delete('http://localhost:2001/api/tokens', {params: {token: that.token}})
       .then(function (response) {
         console.log(response)
         sessionStorage.clear()

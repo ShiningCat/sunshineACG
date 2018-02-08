@@ -25,7 +25,7 @@
       <div style="text-align: center;">
         <h5>{{error}}</h5>
       </div>
-      <p><label for="remember"><input name="remember" v-model="remember" type="checkbox" id="remember" value="" /> 记住我的登录信息</label>
+      <p><label >请点击验证码</label>
       <a href="/forgot" title=" Password Lost and Found" style="color: #3d4450;float:right;font-weight:bold;padding:2px;">忘记密码？</a></p>
       <button class="btn btn-inverse-primary pull-left" @click="login" type="button" >登录</button>
       <a href="/registered" class="btn btn-inverse-primary pull-right">注册</a>
@@ -62,7 +62,6 @@ export default {
     return {
       email: '',
       password: '',
-      remember: false,
       geetest_challenge: '',
       geetest_validate: '',
       geetest_seccode: '',
@@ -70,7 +69,7 @@ export default {
       gt_server_status: '',
       error: '',
       captchaObj: '',
-      isLogin: false,
+      isLogin: true,
       userAvatar: '/static/images/avatar.jpg',
       userId: localStorage.getItem("userId"),
       userName: localStorage.getItem("userName"),
@@ -83,14 +82,8 @@ export default {
     }
   },
   created() {
-    if (this.token == null){
-      if (sessionStorage.getItem("token") == null){
-        this.isLogin = true;
-      } else {
-        this.token = sessionStorage.getItem("token")
-        this.userId = sessionStorage.getItem("userId")
-        this.userName = sessionStorage.getItem("userName")
-      }
+    if (this.token != null){
+      this.isLogin = false;
     }
   },
   methods: {
@@ -104,7 +97,7 @@ export default {
         that.error = '请点击验证码'
         return
       }
-      axios.post('http://localhost:2001/api/token', qs.stringify({
+      axios.post('http://localhost:2001/api/tokens', qs.stringify({
         email: that.email,
         password: that.password,
         geetest_challenge: that.geetest_challenge,
@@ -116,17 +109,16 @@ export default {
         var result = response.data
         if(result.success){
           var user = result.obj.userInfo
-          if (that.remember){
-            localStorage.setItem("token",result.obj.token)
-            localStorage.setItem("userName",user.userName)
-            localStorage.setItem("userAvatar",user.userAvatar)
-            localStorage.setItem("userAvatar",user.userAvatar)
-          }else{
-            sessionStorage.setItem("userId",user.userId)
-            sessionStorage.setItem("token",result.obj.token)
-            sessionStorage.setItem("userName",user.userName)
-            sessionStorage.setItem("userAvatar",user.userAvatar)
+          localStorage.setItem("token",result.obj.token)
+          localStorage.setItem("userId",user.userId)
+          localStorage.setItem("userName",user.userName)
+          localStorage.setItem("userAvatar",user.userAvatar)
+          switch (user.sex) {
+            case 1:localStorage.setItem('sex','mars');break;
+            case 2:localStorage.setItem('sex','venus');break;
+            default:localStorage.setItem('sex','genderless');break;
           }
+          that.token = result.obj.token
           that.userId = user.userId
           that.userName = user.userName
           that.isLogin = false
@@ -134,28 +126,22 @@ export default {
           $("html,body").animate({scrollTop:90}, 500)
           $("html,body").animate({scrollTop:0}, 500)
         }else{
-          // sessionStorage.setItem('email', that.email)
-          // sessionStorage.setItem('password', response.data.password)
           that.error = result.errorMsg
           that.captchaObj.reset()
         }
       }).catch(function (error) {
-        console.log(error)
-        that.$route.matched[0].meta = {
-            requiresAuth: true
-        }
       })
     },
     logout () {
       let that = this
-      axios.delete('http://localhost:2001/api/token', {params: {token: that.token}})
-      .then(function (response) {
-        sessionStorage.clear()
-        that.isLogin = true
-        localStorage.clear()
-        $("html,body").animate({scrollTop:90}, 500)
-        $("html,body").animate({scrollTop:0}, 500)
-      })
+      that.isLogin = true
+      localStorage.removeItem('token')
+      localStorage.removeItem('userId')
+      localStorage.removeItem('userName')
+      localStorage.removeItem('userAvatar')
+      localStorage.removeItem('sex')
+      $("html,body").animate({scrollTop:90}, 500)
+      $("html,body").animate({scrollTop:0}, 500)
     }
   }
 }

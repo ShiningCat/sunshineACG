@@ -1,30 +1,30 @@
 <template>
 <div class="container">
-  <div class="row" style="width: 40%;margin-left: auto; margin-right: auto;padding-top: 50px;">
-    <aside id="zan_login-5"> 
-      <div class="panel panel-zan aos-init aos-animate" style="text-align: center;" aos="flip-center" aos-duration="3000"> 
-        <div class="panel-heading"><span  style="float:left;"><router-link to="login/"><i class="fa fa-reply"></i></router-link></span>注册</div> 
-        <div class="login-form clearfix" action="" method="post"> 
-          <div class="form-group"> 
-            <div class="input-group"> 
-              <div class="input-group-addon"><i class="fa fa-user"></i></div> 
+  <div v-if="!success" class="row" style="width: 40%;margin-left: auto; margin-right: auto;padding-top: 50px;">
+    <aside id="zan_login-5">
+      <div class="panel panel-zan aos-init aos-animate" style="text-align: center;" aos="flip-center" aos-duration="3000">
+        <div class="panel-heading"><span  style="float:left;"><router-link to="login/"><i class="fa fa-reply"></i></router-link></span>注册</div>
+        <div class="login-form clearfix" action="" method="post">
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-addon"><i class="fa fa-user"></i></div>
               <input class="form-control" v-model="userName" minlength="3" maxlength='20' placeholder="昵称(至少3个字)" type="text" value="" size="20">
-            </div> 
-          </div>
-          <div class="form-group">
-            <div class="input-group"> 
-              <div class="input-group-addon"><i class="fa fa-envelope-o"></i></div> 
-              <input class="form-control" v-model="email" type="text" minlength='8' maxlength='80' placeholder="邮箱"  value="" size="80">
-            </div> 
-          </div>
-          <div class="form-group">
-            <div class="input-group"> 
-              <div class="input-group-addon"><i class="fa fa-lock"></i></div> 
-              <input class="form-control" type="password" v-model="password" placeholder="密码" minlength='7' maxlength='16'> 
             </div>
           </div>
           <div class="form-group">
-            <div class="center-block"> 
+            <div class="input-group">
+              <div class="input-group-addon"><i class="fa fa-envelope-o"></i></div>
+              <input class="form-control" v-model="email" type="text" minlength='8' maxlength='80' placeholder="邮箱"  value="" size="80">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-addon"><i class="fa fa-lock"></i></div>
+              <input class="form-control" type="password" v-model="password" placeholder="密码" minlength='7' maxlength='16'>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="center-block">
             <captcha></captcha>
             </div>
           </div>
@@ -32,9 +32,12 @@
             <h5>{{error}}</h5>
           </div>
           <button  @click="registered" class="btn btn-inverse-primary pull-center" :disabled="isDisabled" >注册</button>
-          </div> 
+          </div>
         </div>
     </aside>
+  </div>
+  <div v-else>
+    <div class="page-content well text-center"> <h2>注册成功,请去邮箱验证您的账号</h2> <p><router-link to="/login" class="btn btn-danger">去登录</router-link></p> </div>
   </div>
 </div>
 </template>
@@ -59,7 +62,8 @@ export default {
       gt_server_status: '',
       isDisabled: false,
       error: '',
-      captchaObj: ''
+      captchaObj: '',
+      success:false
     }
   },
   created: function () {
@@ -70,8 +74,6 @@ export default {
   methods: {
     registered () {
       let that = this
-      // var $modal = $('#remind')
-      // var $confirmBtn = $modal.find('[data-am-modal-confirm]');
       if (that.email == '' || that.password == '' || that.userName == ''){
         that.error = '请输入注册信息'
         return
@@ -86,7 +88,7 @@ export default {
         return
       }
       that.isDisabled=true
-      axios.post('http://localhost:2001/api/user/creation', qs.stringify({
+      axios.post('http://localhost:2001/api/users', qs.stringify({
         userName: that.userName,
         email: that.email,
         password: that.password,
@@ -97,46 +99,18 @@ export default {
         gt_server_status: that.gt_server_status
       }))
       .then(function (response) {
-        
+
         if (response.data.success) {
-          that.error = '注册成功,请去邮箱验证您的账号'
-          setTimeout(that.$router.push({ path: '/login' },5000))
-        // localStorage.setItem('email', that.email)
-        // localStorage.setItem('password', response.data.password)
-        // localStorage.setItem('remember', response.data.remember)
-        // that.$router.push({ path: '/' })
+          that.success = true
         } else {
           that.isDisabled=false
           that.captchaObj.reset()
-          // console.log(response.data.errorMsg)
           that.error = response.data.errorMsg
         }
       })
       .catch(function (error) {
-        if (!that.email) {
-          that.error = '邮箱不能为空'
-        } else {
-          console.log(error)
-          that.$route.matched[0].meta = {
-            requiresAuth: true
-          }
-        }
       })
     }
   }
 }
 </script>
-
-<style>
-.am-form {
-  width: 350px;
-  /* min-height: 590px; */
-  margin:0 auto;
-}
-.am-u-sm-centered {
-  text-align: center;
-}
-.am-btn {
-  width: 100%;
-}
-</style>

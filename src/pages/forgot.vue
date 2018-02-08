@@ -71,7 +71,7 @@ export default {
         return
       }
       that.isDisabled = true
-      axios.post('http://localhost:2001/api/user/reset-password/mail', qs.stringify({
+      axios.post('http://localhost:2001/api/users/update_password/mail', qs.stringify({
         email: that.email,
         geetest_challenge: that.geetest_challenge,
         geetest_validate: that.geetest_validate,

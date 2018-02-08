@@ -3,7 +3,7 @@
   <div class="row">
     <div id="mainstay"  class="col-md-8">
       <div id="article-list" v-for="topic in topics">
-        <div class="article well clearfix mybody3 aos-init" aos="flip-up" aos-duration='1000'>
+        <div id="dsds" class="article well clearfix mybody3 aos-init" aos="flip-up" aos-duration='1000'>
           <section class="hidden-xs">
             <div class="title-article">
               <h1><router-link :to="'/topic/'+ topic.topicId" ><span class="animated_h1">{{topic.topicName}}</span><br /><span class="label label-info" style="font-size:13px;"></span></router-link></h1>
@@ -137,7 +137,7 @@ export default {
       userAvatar: '/static/images/avatar.jpg',
       userName:localStorage.getItem("userName"),
       userId: localStorage.getItem("userId"),
-      token:localStorage.getItem("token"),
+      token: localStorage.getItem("token"),
       //第几页
       pageNum: 1,
       // 总页数
@@ -145,22 +145,13 @@ export default {
       topics: ''
     }
   },
-  created() {
-    if (this.token == null){
-      if (sessionStorage.getItem("token") == null){
-        this.isLogin = true;
-      } else {
-        this.token = sessionStorage.getItem("token")
-        this.userId = sessionStorage.getItem("userId")
-        this.userName = sessionStorage.getItem("userName")
-      }
-    }
+  mounted() {
     this.getTopics(this.pageNum)
   },
   methods: {
     getTopics(page) {
       let that = this
-      axios.get('http://localhost:2002/api/topic', {
+      axios.get('http://localhost:2002/api/topics', {
         params: {
           page: page
         }
@@ -182,7 +173,6 @@ export default {
       }
     },
     pageClick: function(){
-      console.log('现在在'+this.pageNum+'页');
     }
   },
   computed: {

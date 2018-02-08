@@ -3,7 +3,7 @@
   <div class="row">
    <div id="mainstay"  class="col-md-8">
     <div id="article-list" v-for="theme in themes">
-      <div class="article well clearfix mybody3"  >
+      <div class="article well clearfix mybody3">
         <div style="height:30px;">
           <span >
             <span class="author-avatar" :href="'/user/'+ theme.themeUserId">
@@ -11,20 +11,20 @@
               <img v-else class="avatar avatar-30 wp-user-avatar wp-user-avatar-30 alignnone photo" width="30" height="30" :src="userAvatar" />
             </span>
               <span class="lh30 ml15">
-                <a class="" :href="'/user/'+ theme.themeUserId">{{theme.themeUserName}}</a>
+                <router-link class="" :to="'/user/'+ theme.themeUserId">{{theme.themeUserName}}</router-link>
               </span>
               <span class="lh30 ml15">{{theme.introduce}}</span> 
           </span>
         </div>
-          <div class="ContentItem AnswerItem">
-            <div class="ContentItem-meta" >
-              <h4 style="" class="ContentItem-title">
-                <a target="_blank" :href="'/theme/'+ theme.themeId">{{theme.themeName}}</a>
+          <div>
+            <div>
+              <h4>
+                <router-link :to="'/theme/'+ theme.themeId">{{theme.themeName}}</router-link>
               </h4>
             </div>
-            <div class="RichContent is-collapsed">
-              <div class="">
-              <p class="">{{theme.themeContent}}</p>
+            <div>
+              <div>
+              <p>{{theme.themeContent}}</p>
               </div>
             </div>
           </div>
@@ -32,22 +32,22 @@
       </div>
       <div id="zan-page" class="clearfix">
         <ul class="pagination pagination-zan pull-right">
-          <li v-if="pageNum>1"><a to="" v-on:click="pageNum--,pageClick()">&laquo;</a></li>
-          <li v-if="pageNum==1"><a to="" class="banclick">&laquo;</a></li>
+          <li><a v-on:click="btnClick(1)">1</a></li>
+          <li v-if="pageNum>1"><a v-on:click="btnClick(pageNum-1)">&laquo;</a></li>
+          <li v-if="pageNum==1"><a class="banclick">&laquo;</a></li>
           <li v-for="index in indexs"  v-bind:class="{ 'active': pageNum == index}">
               <a to="" v-on:click="btnClick(index)">{{ index }}</a>
           </li>
           <li><span>...</span></li>
-          <li v-if="pageNum!=pages"><a to="" v-on:click="pageNum++,pageClick()">&raquo;</a></li>
-          <li v-if="pageNum == pages"><a to="" class="banclick">&raquo;</a></li>
+          <li v-if="pageNum!=pages"><a v-on:click="btnClick(pageNum+1)">&raquo;</a></li>
+          <li v-if="pageNum == pages"><a class="banclick">&raquo;</a></li>
           <li><a v-on:click="btnClick(pages)">{{pages}}</a></li>
         </ul>
       </div>
       <div id="respond" class="comment-respond">
         <h3 id="reply-title" class="comment-reply-title">
           <i class="fa fa-pencil"></i>发表帖子
-          <small>
-            <a rel="nofollow" id="cancel-comment-reply-link" href="/qianlianwanhua.html#respond" style="display:none;">取消回复</a></small>
+          <small><a rel="nofollow" id="cancel-comment-reply-link" href="/qianlianwanhua.html#respond" style="display:none;">取消回复</a></small>
         </h3>
         <p  v-if="isLogin" class="must-log-in">要发表帖子，您必须先<router-link to="/login" >登录</router-link>。</p>
         <div v-else id="commentform" class="comment-form" >
@@ -68,11 +68,11 @@
     <aside class="col-md-4" id="sidebar">
       <aside id="zan_custom-3">
         <div class="panel panel-zan aos-init" aos="fade-up" aos-duration="2000">
-        <div class="panel-heading">
+        <!-- <div class="panel-heading">
           近期更新记录
-        </div>
+        </div> -->
         <div class="panel-body custom">
-          20171224 朝霞之歌 解决终章视频播放问题
+          <button class="btn btn-primary" @click="gotopost">我要发帖</button>
         </div>
         </div>
       </aside>
@@ -119,7 +119,7 @@ export default {
   methods: {
     getThemes(page) {
       let that = this
-      axios.get("http://localhost:2002/api/theme", {
+      axios.get("http://localhost:2002/api/themes", {
         params: {
           page: page,
           topicId : that.topicId
@@ -153,7 +153,7 @@ export default {
         return
       }
       that.postFlag = true
-      axios.post('http://localhost:2002/api/theme', qs.stringify({
+      axios.post('http://localhost:2002/api/themes', qs.stringify({
         themeName: that.themeName,
         themeContent: that.themeContent,
         themeTopicId: that.topicId,
@@ -181,8 +181,8 @@ export default {
         this.getThemes(this.pageNum)
       }
     },
-    pageClick: function(){
-      console.log('现在在'+this.pageNum+'页');
+    gotopost(){
+      $("html,body").animate({scrollTop:$("html,body").height()}, 500)
     }
   },
   computed: {
@@ -192,21 +192,21 @@ export default {
       var ar = [];
       if(this.pages>= 5){
         if(this.pageNum > 3 && this.pageNum < this.pages-2){
-                left = this.pageNum - 2
-                right = this.pageNum + 2
+          left = this.pageNum - 2
+          right = this.pageNum + 2
         }else{
-            if(this.pageNum<=3){
-                left = 1
-                right = 5
-            }else{
-                right = this.pages
-                left = this.pages -4
-            }
+          if(this.pageNum<=3){
+            left = 1
+            right = 5
+          }else{
+            right = this.pages
+            left = this.pages -4
+          }
         }
       }
     while (left <= right){
-        ar.push(left)
-        left ++
+      ar.push(left)
+      left ++
     }
     return ar
     }

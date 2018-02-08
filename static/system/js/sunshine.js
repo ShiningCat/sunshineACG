@@ -464,16 +464,20 @@ jQuery(document).ready(function () {
 //         $(s[i]).removeClass("aos-animate")
 //       }
 //     }
-    sTop = $(window).scrollTop();
-    for (let i = 0; i < $('.aos-init').length; i++) {
-      if($($('.aos-init')[i]).offset().top > sTop){
-        $($('.aos-init')[i]).addClass("aos-animate")
-      } else if ($($('.aos-init')[i]).offset().top + $($('.aos-init')[i]).height() < sTop){
-        $($('.aos-init')[i]).removeClass("aos-animate")
-      }
-    }
+
+    setTimeout(() => {
+        sTop = $(window).scrollTop()
+        for (let i = 0; i < $('.aos-init').length; i++) {
+        if($($('.aos-init')[i]).offset().top > sTop){
+            $($('.aos-init')[i]).addClass("aos-animate")
+        } else if ($($('.aos-init')[i]).offset().top + $($('.aos-init')[i]).height() < sTop){
+            $($('.aos-init')[i]).removeClass("aos-animate")
+        }
+        }
+    }, 1000);
+    
   $(window).scroll(function() {
-    sTop = $(window).scrollTop();
+    sTop = $(window).scrollTop()
     for (let i = 0; i < $('.aos-init').length; i++) {
       if($($('.aos-init')[i]).offset().top > sTop){
         $($('.aos-init')[i]).addClass("aos-animate")

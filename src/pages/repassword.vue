@@ -19,7 +19,7 @@
           <div style="text-align: center;">
             <h5>{{error}}</h5>
           </div>
-          <button  @click="repassword" value="提交"  class="btn btn-inverse-primary pull-center">提交</button>
+          <button  @click="repassword" value="提交" :disabled="isDisabled" class="btn btn-inverse-primary pull-center">提交</button>
           </div>
         </div>
         <h2 style="color:red;">{{msg}}</h2>
@@ -45,7 +45,7 @@ export default {
       geetest_seccode: '',
       userId: '',
       gt_server_status: '',
-      isDisabled: true,
+      isDisabled: false,
       error: '',
       captchaObj: '',
       msg: ''
@@ -59,7 +59,7 @@ export default {
     checkCode () {
       var code = this.$route.params.code
       let that = this
-      axios.get('http://localhost:2001/api/user/reset-password/' + code)
+      axios.get('http://localhost:2001/api/users/update_password/' + code)
       .then(function (response) {
         if (response.data.success) {
           that.repasswordPage = true
@@ -74,9 +74,8 @@ export default {
     repassword () {
       var code = this.$route.params.code
       let that = this
-      var $modal = $('#remind')
-      var $confirmBtn = $modal.find('[data-am-modal-confirm]')
-      axios.post('http://localhost:2001/api/user/reset-password', qs.stringify({
+      that.isDisabled = true
+      axios.put('http://localhost:2001/api/users/update_password/', qs.stringify({
         code: code,
         password: that.password,
         geetest_challenge: that.geetest_challenge,
@@ -87,35 +86,14 @@ export default {
       })).then(function (response) {
         if (response.data.success) {
           that.error = response.data.obj
-          setTimeout(that.$router.push({ path: '/login' },2000))
         } else {
-          that.isDisabled=true
+          that.isDisabled=false
           that.captchaObj.reset()
           that.error = response.data.errorMsg
         }
-        // localStorage.setItem('email', that.email)
-        // localStorage.setItem('password', response.data.password)
-        // localStorage.setItem('remember', response.data.remember)
       }).catch(function (error) {
-        console.log(error)
-        that.$route.matched[0].meta = {
-          requiresAuth: true
-        }
       })
     }
   }
 }
 </script>
-<style>
-.am-form {
-  width: 350px;
-  /* min-height: 590px; */
-  margin:0 auto;
-}
-.am-u-sm-centered {
-  text-align: center;
-}
-.am-btn {
-  width: 100%;
-}
-</style>
